@@ -1,64 +1,96 @@
 // Mouse icon that is positioned based on a target element
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CursorIcon } from "./CursorIcon";
 import { CSSTransition } from "react-transition-group";
-
 import styled from "styled-components";
 
-const StyledCursor = styled.div`
+const CursorBase = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
   justify-content: center;
   position: fixed;
-  top: ${({ top }) => top}px;
-  left: ${({ left }) => left}px;
-  transition: top 300ms ease, left 300ms ease;
+  top: 150px;
+  left: 150px;
+  transition: all 0.3s ease;
 `;
+
+const StyledCursor = styled(CursorBase)<{ top: number; left: number }>`
+  top: ${(props) => props.top}px;
+  left: ${(props) => props.left}px;
+`;
+
+// const StyledCursor = styled(CursorBase)<{ previousPosition: {x: number, y: number}, newPosition: {x: number, y: number} }>`
+//   @keyframes moveCursor {
+//     from {
+//       top: ${(props) => props.previousPosition.y}px;
+//       left: ${(props) => props.previousPosition.x}px;
+//     }
+//     to {
+//       top: ${(props) => props.newPosition.y}px;
+//       left: ${(props) => props.newPosition.x}px;
+//     }
+//   }
+//   animation: moveCursor 0.3s ease;
+// `;
 
 export const Cursor = ({
   name,
-  x,
-  y,
+  position,
+  timeout,
 }: {
   name: string;
-  x: number;
-  y: number;
+  position: { x: number; y: number };
+  timeout: number;
 }) => {
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  console.log("coordinates passed to cursor", position);
   const [active, setActive] = useState(false);
   const [clicked, setClicked] = useState(false);
-  const [xCoord, setXCoord] = useState(x);
-  const [yCoord, setYCoord] = useState(y);
+  
+  // const ref = useRef(null);
+  // const [xCoord, setXCoord] = useState(x);
+  // const [yCoord, setYCoord] = useState(y);
 
-  useEffect(() => {
-    setPosition({
-      top: yCoord - window.scrollY,
-      left: xCoord - window.scrollX,
-    });
-    setActive(true);
-  }, [xCoord, yCoord]);
+  // useEffect(() => {
+  //   if (position.y > window.innerHeight) {
+  //     (ref.current! as HTMLElement).scroll({top: position.y, behavior: 'smooth'});
+  //   }
+  // }, [position])
 
-  const handleClick = () => {
-    setYCoord(yCoord + 100);
-    setXCoord(xCoord + 100);
+  // useEffect(() => {
+  //   setPosition({
+  //     top: yCoord - window.scrollY,
+  //     left: xCoord - window.scrollX,
+  //   });
+  //   setActive(true);
+  // }, [xCoord, yCoord]);
 
-    setTimeout(() => {
-      clicked === false && setClicked(!clicked);
-      console.log("click!!");
-      setTimeout(() => {
-        setClicked(false);
-      }, 300);
-    }, 1000);
-  };
+  // for animation when simulating a click
+  // const handleClick = () => {
+  //   setYCoord(yCoord + 100);
+  //   setXCoord(xCoord + 100);
+
+  //   setTimeout(() => {
+  //     clicked === false && setClicked(!clicked);
+  //     console.log("click!!");
+  //     setTimeout(() => {
+  //       setClicked(false);
+  //     }, 300);
+  //   }, 1000);
+  // };
 
   return (
-    <CSSTransition in={active} timeout={300} onExited={() => setActive(false)}>
+    <CSSTransition
+      in={active}
+      timeout={timeout}
+      onExited={() => setActive(false)}
+    >
       <StyledCursor
-        top={position.top}
-        left={position.left}
-        onClick={handleClick}
+        top={position.y}
+        left={position.x}
+        // onClick={handleClick}
+        // ref={ref}
       >
         <NameTag name={name} />
         <CursorIcon clicked={clicked} />
@@ -71,7 +103,7 @@ interface Props {
   target: HTMLElement;
 }
 
-const NameTag = ({ name }) => {
+const NameTag = ({ name }: { name: string }) => {
   return (
     <div
       style={{

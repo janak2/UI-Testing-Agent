@@ -1,7 +1,7 @@
 import {printLine} from "./modules/print";
 import "./content.styles.css";
-import {Cursor} from "./Cursor";
-import React, {useEffect, useState} from "react";
+import { Cursor } from "./Cursor";
+import React, { useEffect } from "react";
 import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
 import {render} from "react-dom";
 import {StyleSheetManager} from "styled-components";
@@ -11,6 +11,25 @@ import {scrapeDOM} from "./modules/scraper";
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
 
+function requestFeedback(persona, domSummary) {
+  console.log("sending request");
+  chrome.runtime.sendMessage(
+    {
+      type: "getFeedback",
+      persona: persona,
+      domSummary: domSummary,
+    },
+    (response) => {
+      // handle the response here
+      console.log(response);
+    }
+  );
+}
+
+$(document).ready(() => {
+  console.log("starting scrape");
+  requestFeedback("angry steve jobs", scrapeDOM());
+});
 
 printLine("Using the 'printLine' function from the Print Module");
 
@@ -26,39 +45,45 @@ if (body) {
 }
 
 const getElementCoordinates = (element) => {
-    const rect = element.getBoundingClientRect();
-    return {
-        x: rect.x,
-        y: rect.y,
-    };
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.x + rect.width / 2,
+    y: rect.y + rect.height / 2,
+  };
 };
 
 const getRandomClickableElement = () => {
-    // Get all elements in the DOM
-    const allElements = document.getElementsByTagName("*");
+  // Get all elements in the DOM
+  const allElements = document.getElementsByTagName("*");
 
-    // Filter clickable elements
-    const clickableElements = [].filter.call(allElements, (element) => {
-        const tagName = element.tagName.toLowerCase();
-        const hasClickableRole =
-            element.getAttribute("role") === "button" ||
-            element.getAttribute("role") === "link";
-        const clickableTags = ["a", "button", "input"];
-        const isClickableTag = clickableTags.includes(tagName);
-        const isClickableInput =
-            tagName === "input" &&
-            ["submit", "button", "reset", "image"].includes(element.type);
+  // Filter clickable elements
+  const clickableElements = [].filter.call(allElements, (element) => {
+    const tagName = element.tagName.toLowerCase();
+    const hasClickableRole =
+      element.getAttribute("role") === "button" ||
+      element.getAttribute("role") === "link";
+    const clickableTags = ["a", "button", "input"];
+    const isClickableTag = clickableTags.includes(tagName);
+    const isClickableInput =
+      tagName === "input" &&
+      ["submit", "button", "reset", "image"].includes(element.type);
 
-        return hasClickableRole || isClickableTag || isClickableInput;
-    });
+    const isNotAtOrigin =
+      element.getBoundingClientRect().x !== 0 &&
+      element.getBoundingClientRect().y !== 0;
+    return (
+      (hasClickableRole || isClickableTag || isClickableInput) && isNotAtOrigin
+    );
+  });
 
-    // Select a random element from the clickable elements
-    const randomIndex = Math.floor(Math.random() * clickableElements.length);
-    const randomClickableElement = clickableElements[randomIndex];
+  // Select a random element from the clickable elements
+  const randomIndex = Math.floor(Math.random() * clickableElements.length);
+  const randomClickableElement = clickableElements[randomIndex];
 
-    return randomClickableElement;
+  return randomClickableElement;
 };
 
+// FOR SHADOW-DOM IMPLEMENTATION
 const linkNode = document.createElement("link");
 linkNode.type = "text/css";
 linkNode.rel = "stylesheet";
@@ -80,22 +105,55 @@ shadow.appendChild(styleSlot);
 const renderIn = document.createElement("div");
 // append the renderIn element inside the styleSlot
 styleSlot.appendChild(renderIn);
-const Container = () => {
-    const [quip, setQuip] = useState("-no set-")
 
-    useEffect(() => {
-        setupListeners(setQuip);// Run! Like go get some data from an API.
-    }, []);
-    return (<div>
-        <AgentStatusContainer quip={quip}/>
-        <Cursor name="John" x={100} y={100}/>
-    </div>)
-}
+const App = () => {
+  const [position, setPosition] = React.useState({ x: window.innerWidth * 0.4, y: window.innerHeight * 0.3 });
+  const [cursorTimeout, setCursorTimeout] = React.useState(50000)
+
+  React.useEffect(() => {
+    const simulateClick = async () => {
+      const nextElement = getRandomClickableElement();
+      console.log(nextElement);
+      const nextPosition = getElementCoordinates(nextElement);
+      console.log(nextElement.getBoundingClientRect());
+      console.log(nextElement, nextPosition);
+      if (nextPosition.y >= window.innerHeight) {
+        // Scrolling the page itself
+        window.scrollTo({
+          top: nextPosition.y - window.innerHeight / 2 + 180,
+          behavior: "smooth",
+        });
+        // setPosition({ x: position.x + 320, y: position.y + 120 });
+        // Set the cursor position relative to the window
+        setTimeout(() => {
+          // console.log("y scroll by: ", window.scrollY);
+          // console.log("x scroll by: ", window.scrollX);
+          const newPos = {
+            x: nextPosition.x,
+            y: nextPosition.y - window.scrollY,
+          }
+          setPosition(newPos);
+          setCursorTimeout(2000)
+        }, 1000);
+      } else {
+        setPosition(nextPosition);
+      }
+    };
+    simulateClick();
+  }, []);
+  return (
+    <>
+      <AgentStatusContainer />
+      <Cursor name="John" position={position} timeout={cursorTimeout}/>
+    </>
+  );
+};
+
 render(
-    <StyleSheetManager target={styleSlot}>
-        <Container/>
-    </StyleSheetManager>,
-    renderIn
+  <StyleSheetManager target={styleSlot}>
+    <App />
+  </StyleSheetManager>,
+  renderIn
 );
 
 function setupListeners(setQuip) {
