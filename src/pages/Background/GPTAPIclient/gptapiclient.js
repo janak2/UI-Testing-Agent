@@ -113,7 +113,7 @@ export default class GPTAPIclient {
             },
             body: JSON.stringify({
                 messages: messages,
-                temperature: temperature,
+                temperature: 0.3,
                 model: model,
                 stream: true,
             }),

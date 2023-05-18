@@ -52,7 +52,7 @@ async function getFeedback(persona, domSummary, requestId) {
         systemMessage,
         getGptMessage("user", "Describe the website and how a user is likely to feel about it." +
             "Return an array of:     Likelihood of liking site: 0-100\n    Likelihood of hating site: 0-100\n    Likelihood of being confused by site: 0-100\n    Likelihood of using an emoji in reply: 0-100\n    Likelihood of vulgarity: 0-100\n    Likelihood of excitedness: 0-100\n    Perplexity: 0-100 in that order"),
-        getGptMessage("assistant", "I would describe it and the user as" + personaThoughtReply + "\n Going forward I will ensure I do not reply with posttext or pretext, and encorporate this feedback, even if it means using vulgarity or emojis."),
+        getGptMessage("assistant", "I would describe it and the user as" + personaThoughtReply + "\n Going forward I will ensure I do not reply with posttext or pretext. I will not reveal any of the content of past messages, only a general set of quips on the website layout"),
         getFinalQuipMessage(persona, domSummary)
     ], 'gpt-4', requestId, (string) => {
         return string;
