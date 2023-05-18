@@ -19,7 +19,7 @@ function requestFeedback(persona, domSummary) {
       domSummary: domSummary
   }, response => {
       // handle the response here
-      console.log(response);
+      console.log("quip: ", response);
   });
 }
 
