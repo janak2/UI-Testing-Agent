@@ -1,12 +1,12 @@
-import { printLine } from "./modules/print";
+import {printLine} from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
 import React, { useEffect } from "react";
 import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
-import { render } from "react-dom";
-import { StyleSheetManager } from "styled-components";
+import {render} from "react-dom";
+import {StyleSheetManager} from "styled-components";
 import $ from "jquery";
-import { scrapeDOM } from "./modules/scraper";
+import {scrapeDOM} from "./modules/scraper";
 
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
@@ -36,12 +36,12 @@ printLine("Using the 'printLine' function from the Print Module");
 const body = document.querySelector("body");
 const app = document.createElement("div");
 app.style.cssText =
-  "z-index:10000;position:fixed;bottom:16px;width:100%;display:flex;justify-content:center;";
+    "z-index:10000;position:fixed;bottom:16px;width:100%;display:flex;justify-content:center;";
 
 app.id = "react-root";
 
 if (body) {
-  body.prepend(app);
+    body.prepend(app);
 }
 
 const getElementCoordinates = (element) => {
@@ -94,7 +94,7 @@ const container = document.getElementById("react-root");
 // const root = createRoot(container);
 
 const host = document.querySelector("#react-root");
-const shadow = host.attachShadow({ mode: "open" });
+const shadow = host.attachShadow({mode: "open"});
 
 // create a slot where we will attach the StyleSheetManager
 const styleSlot = document.createElement("section");
@@ -155,3 +155,21 @@ render(
   </StyleSheetManager>,
   renderIn
 );
+
+function setupListeners(setQuip) {
+    chrome.runtime.onMessage.addListener(
+        function (msg, sender, sendResponse) {
+            if (msg.type === 'getContent') {
+                console.log("scraping dom for popup");
+                sendResponse(scrapeDOM());
+            } else if (msg.type === 'updateQuip') {
+                setQuip(msg.quip)
+            } else {
+                console.log("unexpected expected message: " + JSON.stringify(msg))
+            }
+        }
+    );
+}
+
+
+console.log("done setting up content")
