@@ -1,12 +1,12 @@
-import {printLine} from "./modules/print";
+import { printLine } from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
 import React, { useEffect, useState } from "react";
 import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
-import {render} from "react-dom";
-import {StyleSheetManager} from "styled-components";
+import { render } from "react-dom";
+import { StyleSheetManager } from "styled-components";
 import $ from "jquery";
-import {scrapeDOM} from "./modules/scraper";
+import { scrapeDOM } from "./modules/scraper";
 
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
@@ -37,12 +37,12 @@ printLine("Using the 'printLine' function from the Print Module");
 const body = document.querySelector("body");
 const app = document.createElement("div");
 app.style.cssText =
-    "z-index:10000;position:fixed;bottom:16px;width:100%;display:flex;justify-content:center;";
+  "z-index:10000;position:fixed;bottom:16px;width:100%;display:flex;justify-content:center;";
 
 app.id = "react-root";
 
 if (body) {
-    body.prepend(app);
+  body.prepend(app);
 }
 
 const getElementCoordinates = (element) => {
@@ -101,7 +101,7 @@ const container = document.getElementById("react-root");
 // const root = createRoot(container);
 
 const host = document.querySelector("#react-root");
-const shadow = host.attachShadow({mode: "open"});
+const shadow = host.attachShadow({ mode: "open" });
 
 // create a slot where we will attach the StyleSheetManager
 const styleSlot = document.createElement("section");
@@ -114,19 +114,22 @@ const renderIn = document.createElement("div");
 styleSlot.appendChild(renderIn);
 
 const App = () => {
-  const [position, setPosition] = React.useState({ x: window.innerWidth * 0.4, y: window.innerHeight * 0.3 });
-  const [cursorTimeout, setCursorTimeout] = React.useState(50000)
+  const [position, setPosition] = React.useState({
+    x: window.innerWidth * 0.4,
+    y: window.innerHeight * 0.3,
+  });
+  const [cursorTimeout, setCursorTimeout] = React.useState(50000);
   const [wasclicked, setWasclicked] = useState(false);
   const [quip, setQuip] = useState("");
 
   React.useEffect(() => {
     console.log("starting scrape");
     requestFeedback("angry steve jobs", scrapeDOM(), setQuip);
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     const simulateClick = async () => {
-      setupListeners(setQuip)
+      setupListeners(setQuip);
       const nextElement = getRandomClickableElement();
       console.log(nextElement);
       const nextPosition = getElementCoordinates(nextElement);
@@ -146,21 +149,28 @@ const App = () => {
           const newPos = {
             x: nextPosition.x,
             y: nextPosition.y - window.scrollY,
-          }
+          };
           setPosition(newPos);
-          setCursorTimeout(2000)
+          setCursorTimeout(2000);
         }, 1000);
       } else {
         setPosition(nextPosition);
       }
-      // nextElement.click();
+      if (wasclicked) {
+        nextElement.click();
+        setWasclicked(false);
+      }
     };
     simulateClick();
   }, [wasclicked]);
   return (
     <>
-      <AgentStatusContainer wasclicked={wasclicked} setWasclicked={setWasclicked} quip={quip}/>
-      <Cursor name="John" position={position} timeout={cursorTimeout}/>
+      <AgentStatusContainer
+        wasclicked={wasclicked}
+        setWasclicked={setWasclicked}
+        quip={quip}
+      />
+      <Cursor name="John" position={position} timeout={cursorTimeout} />
     </>
   );
 };
@@ -173,19 +183,16 @@ render(
 );
 
 function setupListeners(setQuip) {
-    chrome.runtime.onMessage.addListener(
-        function (msg, sender, sendResponse) {
-            if (msg.type === 'getContent') {
-                console.log("scraping dom for popup");
-                sendResponse(scrapeDOM());
-            } else if (msg.type === 'updateQuip') {
-                setQuip(msg.quip)
-            } else {
-                console.log("unexpected expected message: " + JSON.stringify(msg))
-            }
-        }
-    );
+  chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+    if (msg.type === "getContent") {
+      console.log("scraping dom for popup");
+      sendResponse(scrapeDOM());
+    } else if (msg.type === "updateQuip") {
+      setQuip(msg.quip);
+    } else {
+      console.log("unexpected expected message: " + JSON.stringify(msg));
+    }
+  });
 }
 
-
-console.log("done setting up content")
+console.log("done setting up content");
