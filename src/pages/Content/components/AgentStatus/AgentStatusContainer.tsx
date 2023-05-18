@@ -17,7 +17,7 @@ interface IAgentStatusContainerProps {
   agentState: AgentState;
   isAgentPaused: boolean;
   setIsAgentPaused: () => void;
-  quip?: string;
+  quip: string;
   wasclicked: boolean;
   setWasclicked: () => void;
 }
@@ -84,11 +84,15 @@ export default function AgentStatusContainer({
   agentState = AgentState.THOUGHTS_GENERATED,
   isAgentPaused,
   setIsAgentPaused,
-  quip = sampleQuip,
+  quip,
   wasclicked,
   setWasclicked
 }: IAgentStatusContainerProps) {
-  const [isQuipModalOpen, setIsQuipModalOpen] = useState(true);
+
+  React.useEffect(() => {
+    console.log(quip)
+  }, [quip])
+
   return (
     <RootContainer>
       {/* Status */}
@@ -110,14 +114,14 @@ export default function AgentStatusContainer({
           </svg>
         </PlayButton>
         <AgentStatusPill
-          onClick={() => setIsQuipModalOpen(!isQuipModalOpen)}
           agentState={agentState}
           agent={agent}
+          quip={quip}
         />
       </PillContainer>
       {/* Quip modal */}
-      {agentState === AgentState.THOUGHTS_GENERATED && (
-        <QuipModal isQuipModalOpen={isQuipModalOpen} quip={quip} />
+      {quip && (
+        <QuipModal quip={quip} />
       )}
     </RootContainer>
   );

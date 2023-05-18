@@ -6,15 +6,13 @@ import styled from "styled-components";
 // TODO: add animation for showing text word by word
 
 export default function QuipModal({
-  isQuipModalOpen,
   quip,
 }: {
-  isQuipModalOpen: boolean;
   quip?: string;
 }) {
   return (
     <>
-      {(quip && isQuipModalOpen) && (
+      {(quip) && (
         <div
           style={{
             paddingTop: "2rem",

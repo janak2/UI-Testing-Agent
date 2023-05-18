@@ -110,8 +110,10 @@ const App = () => {
   const [position, setPosition] = React.useState({ x: window.innerWidth * 0.4, y: window.innerHeight * 0.3 });
   const [cursorTimeout, setCursorTimeout] = React.useState(50000)
   const [wasclicked, setWasclicked] = useState(false);
+  const [quip, setQuip] = useState("");
 
   React.useEffect(() => {
+    setupListeners(setQuip);
     const simulateClick = async () => {
       const nextElement = getRandomClickableElement();
       console.log(nextElement);
@@ -139,13 +141,13 @@ const App = () => {
       } else {
         setPosition(nextPosition);
       }
-      nextElement.click();
+      //nextElement.click();
     };
     simulateClick();
   }, [wasclicked]);
   return (
     <>
-      <AgentStatusContainer wasclicked={wasclicked} setWasclicked={setWasclicked}/>
+      <AgentStatusContainer wasclicked={wasclicked} setWasclicked={setWasclicked} quip={quip}/>
       <Cursor name="John" position={position} timeout={cursorTimeout}/>
     </>
   );
@@ -165,6 +167,7 @@ function setupListeners(setQuip) {
                 console.log("scraping dom for popup");
                 sendResponse(scrapeDOM());
             } else if (msg.type === 'updateQuip') {
+                console.log("msg quip:", msg.quip);
                 setQuip(msg.quip)
             } else {
                 console.log("unexpected expected message: " + JSON.stringify(msg))

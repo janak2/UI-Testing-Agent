@@ -127,14 +127,17 @@ export default class GPTAPIclient {
             if (done) return
 
             const decoded = new TextDecoder().decode(value)
-            console.log(decoded)
+            //console.log(decoded)
             const json = decoded.split('data: ')[1]  // this data needs some manipulation in order to be parsed, a separate concern
             const aiResponse = JSON.parse(json)
             const aiResponseText = aiResponse.choices[0].delta?.content
             result += aiResponseText || ""
 
             if (port) {
-                port.postMessage({partial: transformer(getStringUpToLastSpace(result))});
+                console.log("send:"+result)
+                const message = {partial: transformer(getStringUpToLastSpace(result))}
+                console.log(message);
+                port.postMessage(message);
             }
             return reader.read().then(processingText)
         }).catch(console.error)

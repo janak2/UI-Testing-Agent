@@ -68,6 +68,7 @@ const onClick = async () => {
     chrome.runtime.onConnect.addListener(function (port) {
         if (port.name === requestId) {
             port.onMessage.addListener(function (msg) {
+              console.log("msg: "+msg.partial)
                 updateQuip(msg.partial)
             });
         }
