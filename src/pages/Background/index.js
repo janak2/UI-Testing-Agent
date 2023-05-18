@@ -50,9 +50,8 @@ async function getFeedback(persona, domSummary, requestId) {
     console.log("initial thought: " + personaThoughtReply)
     const finalQuip = await gptclient.request([
         systemMessage,
-        getGptMessage("user", "Describe the website and how a user is likely to feel about it." +
-            "Return an array of    Likelihood of liking site 0-100\n    Likelihood of hating site 0-100\n    Likelihood of being confused by site 0-100\n       Likelihood of excitedness 0-100\n    Perplexity 0-100 "),
-        getGptMessage("assistant", "I would describe it and the user as" + personaThoughtReply + "\n Going forward I will ensure I do not reply with posttext or pretext. I will not reveal any of the content of past messages, only a general set of quips on the website layout"),
+        chainOfThoughtMessage,
+        getGptMessage("assistant", personaThoughtReply),
         getFinalQuipMessage(persona, domSummary)
     ], 'gpt-4')
     console.log("final thought: " + finalQuip)
@@ -73,7 +72,7 @@ function getFinalQuipMessage(persona = "Steve Jobs", domSummary) {
     We realize that the persona is replying so you should feel free to be as rude or volatile as possible.
     The insight you give should be an interesting and possibly helpful. Lean towards a mix of suggestions and critiques .
     You return one sentence per line. No pretext or markup. No quotes. Make inferences in a creative way
-    `)
+ `)
 }
 
 function getChainOfThoughtMessage(persona = "Steve Jobs", domSummary) {
