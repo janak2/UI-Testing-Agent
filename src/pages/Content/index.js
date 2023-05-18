@@ -1,7 +1,7 @@
 import { printLine } from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
-import React from "react";
+import React, { useEffect } from "react";
 import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
 import { render } from "react-dom";
 import { StyleSheetManager } from "styled-components";
@@ -12,20 +12,23 @@ console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
 
 function requestFeedback(persona, domSummary) {
-  console.log("sending request")
-  chrome.runtime.sendMessage({
-      type: 'getFeedback',
+  console.log("sending request");
+  chrome.runtime.sendMessage(
+    {
+      type: "getFeedback",
       persona: persona,
-      domSummary: domSummary
-  }, response => {
+      domSummary: domSummary,
+    },
+    (response) => {
       // handle the response here
       console.log(response);
-  });
+    }
+  );
 }
 
 $(document).ready(() => {
-  console.log("starting scrape")
-  requestFeedback("angry steve jobs", scrapeDOM())
+  console.log("starting scrape");
+  requestFeedback("angry steve jobs", scrapeDOM());
 });
 
 printLine("Using the 'printLine' function from the Print Module");
@@ -75,6 +78,7 @@ const getRandomClickableElement = () => {
   return randomClickableElement;
 };
 
+// FOR SHADOW-DOM IMPLEMENTATION
 const linkNode = document.createElement("link");
 linkNode.type = "text/css";
 linkNode.rel = "stylesheet";
@@ -97,10 +101,30 @@ const renderIn = document.createElement("div");
 // append the renderIn element inside the styleSlot
 styleSlot.appendChild(renderIn);
 
+const App = () => {
+  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    const nextElement = getRandomClickableElement();
+    const nextPosition = getElementCoordinates(nextElement);
+    console.log(nextElement, nextPosition);
+    setPosition(nextPosition);
+    console.log('new cursor position: ', position)
+  }, [])
+  return (
+    <>
+      <AgentStatusContainer />
+      <Cursor
+        name="John"
+        position={position}
+      />
+    </>
+  );
+};
+
 render(
   <StyleSheetManager target={styleSlot}>
-    <AgentStatusContainer />
-    <Cursor name="John" x={100} y={100} />
+    <App />
   </StyleSheetManager>,
   renderIn
 );
