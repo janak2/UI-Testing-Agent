@@ -26,13 +26,16 @@ export const Cursor = ({
   x: number;
   y: number;
 }) => {
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState({ top: y, left: x });
   const [active, setActive] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [xCoord, setXCoord] = useState(x);
   const [yCoord, setYCoord] = useState(y);
 
   useEffect(() => {
+    console.log("xCoord: ", xCoord);
+    console.log("yCoord: ", yCoord);
+    console.log("position", position);
     setPosition({
       top: yCoord - window.scrollY,
       left: xCoord - window.scrollX,

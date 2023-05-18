@@ -1,4 +1,3 @@
-import { printLine } from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
 import React from "react";
@@ -7,6 +6,7 @@ import { render } from "react-dom";
 import { StyleSheetManager } from "styled-components";
 import $ from "jquery";
 import { scrapeDOM } from "./modules/scraper";
+import { useState, useEffect } from "react";
 
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
@@ -18,8 +18,6 @@ chrome.runtime.sendMessage({ greeting: "hello" }, function (response) {
 $(document).ready(() => {
   scrapeDOM();
 });
-
-printLine("Using the 'printLine' function from the Print Module");
 
 const body = document.querySelector("body");
 const app = document.createElement("div");
@@ -34,6 +32,7 @@ if (body) {
 
 const getElementCoordinates = (element) => {
   const rect = element.getBoundingClientRect();
+  console.log(rect);
   return {
     x: rect.x,
     y: rect.y,
@@ -56,7 +55,12 @@ const getRandomClickableElement = () => {
       tagName === "input" &&
       ["submit", "button", "reset", "image"].includes(element.type);
 
-    return hasClickableRole || isClickableTag || isClickableInput;
+    const hasNonZeroCoordinates = element.getBoundingClientRect().x !== 0;
+
+    return (
+      (hasClickableRole || isClickableTag || isClickableInput) &&
+      hasNonZeroCoordinates
+    );
   });
 
   // Select a random element from the clickable elements
@@ -88,10 +92,34 @@ const renderIn = document.createElement("div");
 // append the renderIn element inside the styleSlot
 styleSlot.appendChild(renderIn);
 
+const Container = () => {
+  const randomClickableElement = getRandomClickableElement();
+  const { x, y } = getElementCoordinates(randomClickableElement);
+
+  const [cursorX, setCursorX] = useState(x);
+  const [cursorY, setCursorY] = useState(y);
+
+  useEffect(() => {
+    const randomClickableElement = getRandomClickableElement();
+    const { x, y } = getElementCoordinates(randomClickableElement);
+    console.log("randomClickableElement", randomClickableElement);
+    console.log("x", x);
+    console.log("y", y);
+    setCursorX(x);
+    setCursorY(y);
+  }, []);
+
+  return (
+    <>
+      <AgentStatusContainer />
+      <Cursor name="John" x={cursorX} y={cursorY} />
+    </>
+  );
+};
+
 render(
   <StyleSheetManager target={styleSlot}>
-    <AgentStatusContainer />
-    <Cursor name="John" x={100} y={100} />
+    <Container />
   </StyleSheetManager>,
   renderIn
 );
