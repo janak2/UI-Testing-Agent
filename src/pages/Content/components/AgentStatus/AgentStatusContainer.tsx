@@ -90,7 +90,7 @@ export default function AgentStatusContainer({
 }: IAgentStatusContainerProps) {
 
   React.useEffect(() => {
-    console.log(quip)
+    console.log('quip parsed to container: ',quip)
   }, [quip])
 
   return (

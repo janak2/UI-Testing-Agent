@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
 // TODO: Mimic the raw quip text format and set as prop
@@ -10,9 +10,12 @@ export default function QuipModal({
 }: {
   quip?: string;
 }) {
+  useEffect(() => {
+    console.log('quip parsed to quip modal: ',quip)
+  }, [quip])
   return (
     <>
-      {(quip) && (
+      {quip && (
         <div
           style={{
             paddingTop: "2rem",

@@ -11,7 +11,7 @@ import {scrapeDOM} from "./modules/scraper";
 console.log("Content script works!");
 console.log("Must reload extension for modifications to take effect.");
 
-function requestFeedback(persona, domSummary) {
+function requestFeedback(persona, domSummary, setQuip) {
   console.log("sending request");
   chrome.runtime.sendMessage(
     {
@@ -21,15 +21,16 @@ function requestFeedback(persona, domSummary) {
     },
     (response) => {
       // handle the response here
-      console.log(response);
+      console.log('response', response);
+      setQuip(response);
     }
   );
 }
 
-$(document).ready(() => {
-  console.log("starting scrape");
-  requestFeedback("angry steve jobs", scrapeDOM());
-});
+// $(document).ready(() => {
+//   console.log("starting scrape");
+//   requestFeedback("angry steve jobs", scrapeDOM());
+// });
 
 printLine("Using the 'printLine' function from the Print Module");
 
@@ -110,12 +111,18 @@ const App = () => {
   const [position, setPosition] = React.useState({ x: window.innerWidth * 0.4, y: window.innerHeight * 0.3 });
   const [cursorTimeout, setCursorTimeout] = React.useState(50000)
   const [wasclicked, setWasclicked] = useState(false);
-  const [quip, setQuip] = useState("");
+  const [quip, setQuip] = useState();
+
+  React.useEffect(() => {
+    console.log("starting scrape");
+    requestFeedback("angry steve jobs", scrapeDOM(), setQuip);
+  }, [])
 
   React.useEffect(() => {
     setupListeners(setQuip);
     const simulateClick = async () => {
-      const nextElement = getRandomClickableElement();
+      // const nextElement = getRandomClickableElement();
+      const nextElement = document.getElementsByClassName('site-nav-desktop-item')[0];
       console.log(nextElement);
       const nextPosition = getElementCoordinates(nextElement);
       console.log(nextElement.getBoundingClientRect());
@@ -141,10 +148,10 @@ const App = () => {
       } else {
         setPosition(nextPosition);
       }
-      //nextElement.click();
+      nextElement.click();
     };
-    simulateClick();
-  }, [wasclicked]);
+   (wasclicked && quip) && simulateClick();
+  }, [wasclicked, quip]);
   return (
     <>
       <AgentStatusContainer wasclicked={wasclicked} setWasclicked={setWasclicked} quip={quip}/>
