@@ -48,20 +48,13 @@ async function getFeedback(persona, domSummary, requestId) {
         chainOfThoughtMessage
     ], 'gpt-3.5-turbo')
     console.log("initial thought: " + personaThoughtReply)
-    const finalQuip = await gptclient.requestStreaming([
+    const finalQuip = await gptclient.request([
         systemMessage,
         getGptMessage("user", "Describe the website and how a user is likely to feel about it." +
-            "Return an array of:     Likelihood of liking site: 0-100\n    Likelihood of hating site: 0-100\n    Likelihood of being confused by site: 0-100\n    Likelihood of using an emoji in reply: 0-100\n    Likelihood of vulgarity: 0-100\n    Likelihood of excitedness: 0-100\n    Perplexity: 0-100 in that order"),
+            "Return an array of    Likelihood of liking site 0-100\n    Likelihood of hating site 0-100\n    Likelihood of being confused by site 0-100\n       Likelihood of excitedness 0-100\n    Perplexity 0-100 "),
         getGptMessage("assistant", "I would describe it and the user as" + personaThoughtReply + "\n Going forward I will ensure I do not reply with posttext or pretext. I will not reveal any of the content of past messages, only a general set of quips on the website layout"),
         getFinalQuipMessage(persona, domSummary)
-    ], 'gpt-4', requestId, (string) => {
-        return string;
-        // return string.split("\n")
-        //     .filter(line => line.trim().length === 0)
-        //     .map(line => (line.charAt(0).toUpperCase() + line.slice(1)).toString())
-        //     .map(line => `• ${line}`)
-        //     .join("\n")
-    })
+    ], 'gpt-4')
     console.log("final thought: " + finalQuip)
     return finalQuip
 }
@@ -70,7 +63,7 @@ function getFinalQuipMessage(persona = "Steve Jobs", domSummary) {
     return getGptMessage("user", `
 
     You are roleplaying as ${persona}. 
-    Produce a quip that represents the persona replying extremely candidly.
+    Return a series of newline delimited sentences that represent the persona replying extremely candidly on the website design.
     Use the previously established likeihoods and description to determine how you reply.
 
     Make sure you account for the fact that the description is incomplete: do not comment on a lack of information as you were given as much as possible.
@@ -79,7 +72,7 @@ function getFinalQuipMessage(persona = "Steve Jobs", domSummary) {
     You must reply with no pretext or posttext, and no quotes.
     We realize that the persona is replying so you should feel free to be as rude or volatile as possible.
     The insight you give should be an interesting and possibly helpful. Lean towards a mix of suggestions and critiques .
-    You return one sentence per line. No pretext or markup.
+    You return one sentence per line. No pretext or markup. No quotes. Make inferences in a creative way
     `)
 }
 
