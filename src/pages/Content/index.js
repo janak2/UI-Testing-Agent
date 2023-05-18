@@ -63,7 +63,7 @@ const getRandomClickableElement = () => {
     const hasClickableRole =
       element.getAttribute("role") === "button" ||
       element.getAttribute("role") === "link";
-    const clickableTags = ["a", "button", "input"];
+    const clickableTags = ["a", "button"];
     const isClickableTag = clickableTags.includes(tagName);
     const isClickableInput =
       tagName === "input" &&
@@ -75,7 +75,7 @@ const getRandomClickableElement = () => {
 
     const hasDomain = !element.href || element.href.includes(window.location.hostname); 
     return (
-      (hasClickableRole || isClickableTag || isClickableInput) && isNotAtOrigin && hasDomain
+      (hasClickableRole || isClickableTag) && isNotAtOrigin && hasDomain
     );
   });
 
