@@ -1,7 +1,7 @@
 import {printLine} from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
 import {render} from "react-dom";
 import {StyleSheetManager} from "styled-components";
@@ -109,6 +109,7 @@ styleSlot.appendChild(renderIn);
 const App = () => {
   const [position, setPosition] = React.useState({ x: window.innerWidth * 0.4, y: window.innerHeight * 0.3 });
   const [cursorTimeout, setCursorTimeout] = React.useState(50000)
+  const [wasclicked, setWasclicked] = useState(false);
 
   React.useEffect(() => {
     const simulateClick = async () => {
@@ -138,12 +139,13 @@ const App = () => {
       } else {
         setPosition(nextPosition);
       }
+      nextElement.click();
     };
     simulateClick();
-  }, []);
+  }, [wasclicked]);
   return (
     <>
-      <AgentStatusContainer />
+      <AgentStatusContainer wasclicked={wasclicked} setWasclicked={setWasclicked}/>
       <Cursor name="John" position={position} timeout={cursorTimeout}/>
     </>
   );
