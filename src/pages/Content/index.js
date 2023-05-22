@@ -2,7 +2,7 @@ import { printLine } from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
 import React, { useEffect, useState } from "react";
-import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
+import AgentStatusContainer, { sampleAgent } from "./components/AgentStatus/AgentStatusContainer";
 import { render } from "react-dom";
 import { StyleSheetManager } from "styled-components";
 import $ from "jquery";
@@ -29,7 +29,7 @@ function requestFeedback(persona, domSummary, setQuip) {
 
 $(document).ready(() => {
   console.log("starting scrape");
-  requestFeedback("angry steve jobs", scrapeDOM());
+  requestFeedback("steve jobs", scrapeDOM());
 });
 
 printLine("Using the 'printLine' function from the Print Module");
@@ -121,7 +121,7 @@ const App = () => {
 
   React.useEffect(() => {
     console.log("starting scrape");
-    requestFeedback("angry steve jobs", scrapeDOM(), setQuip);
+    requestFeedback("steve jobs", scrapeDOM(), setQuip);
   }, []);
 
   React.useEffect(() => {
@@ -173,7 +173,7 @@ const App = () => {
         quip={quip}
       />
       <Cursor
-        name="John"
+        name={sampleAgent.name}
         position={position}
         clicked={cursorClicked}
       />
