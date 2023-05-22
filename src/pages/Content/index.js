@@ -29,7 +29,7 @@ function requestFeedback(persona, domSummary, setQuip) {
 
 $(document).ready(() => {
   console.log("starting scrape");
-  requestFeedback("steve jobs", scrapeDOM());
+  requestFeedback("angry steve jobs", scrapeDOM());
 });
 
 printLine("Using the 'printLine' function from the Print Module");
