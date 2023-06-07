@@ -2,7 +2,9 @@ import { printLine } from "./modules/print";
 import "./content.styles.css";
 import { Cursor } from "./Cursor";
 import React, { useEffect, useState } from "react";
-import AgentStatusContainer from "./components/AgentStatus/AgentStatusContainer";
+import AgentStatusContainer, {
+  sampleAgent,
+} from "./components/AgentStatus/AgentStatusContainer";
 import { render } from "react-dom";
 import { StyleSheetManager } from "styled-components";
 import $ from "jquery";

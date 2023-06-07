@@ -29,12 +29,12 @@ export enum AgentState {
   PROCEED_TO_NEXT_STEP = "is continuing...",
 }
 
-const sampleAgent = {
+export const sampleAgent = {
   id: "012345",
   name: "Steve",
   profileImgUrl:
-    "https://m.media-amazon.com/images/I/61PdVxgNq8L._AC_SL1200_.jpg",
-  prompt: "You are Steve",
+    "https://www.hollywoodreporter.com/wp-content/uploads/2015/03/steve_jobs_the_man_in_the_machine_still.jpg",
+  prompt: "You are john",
 };
 
 const sampleQuip =
