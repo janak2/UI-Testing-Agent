@@ -13,11 +13,11 @@ export default function QuipModal({
   quip?: string;
 }) {
   useEffect(() => {
-    console.log("quip passed to quip window:",quip);
-  }, [quip])
+    console.log("quip passed to quip window:", quip);
+  }, [quip]);
   return (
     <>
-      {(quip) && (
+      {quip && (
         <div
           style={{
             paddingTop: "2rem",
@@ -29,9 +29,9 @@ export default function QuipModal({
             borderImageSource:
               "linear-gradient(221.02deg, #404040 63.16%, #1F1F1F 76.74%)",
             width: "100%",
-            height: "170px",
+            height: "300px",
             overflowY: "scroll",
-            whiteSpace: 'pre-line',
+            whiteSpace: "pre-line",
             borderRadius: "0.5rem",
             backgroundImage:
               "linear-gradient(180deg, #404040 0%, #0D0D0D 68.82%)",

@@ -31,10 +31,10 @@ export enum AgentState {
 
 const sampleAgent = {
   id: "012345",
-  name: "John",
+  name: "Steve",
   profileImgUrl:
-    "https://images.pexels.com/photos/6274712/pexels-photo-6274712.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  prompt: "You are john",
+    "https://m.media-amazon.com/images/I/61PdVxgNq8L._AC_SL1200_.jpg",
+  prompt: "You are Steve",
 };
 
 const sampleQuip =
@@ -43,7 +43,7 @@ const sampleQuip =
 const RootContainer = styled.div`
   margin-left: 48px;
   margin-right: 48px;
-  width: 600px;
+  width: 800px;
   z-index: 10000000;
   position: sticky;
 `;
@@ -88,25 +88,30 @@ export default function AgentStatusContainer({
   setIsAgentPaused,
   quip,
   wasclicked,
-  setWasclicked
+  setWasclicked,
 }: IAgentStatusContainerProps) {
   const [isQuipModalOpen, setIsQuipModalOpen] = useState(true);
 
   useEffect(() => {
-    console.log("quip passed to container:",quip);
-  }, [quip])
+    console.log("quip passed to container:", quip);
+  }, [quip]);
   return (
     <RootContainer>
       {/* Status */}
       <PillContainer>
-        <PlayButton onClick={() => {console.log("wasclicked:",wasclicked);setWasclicked(!wasclicked);}}>
+        <PlayButton
+          onClick={() => {
+            console.log("wasclicked:", wasclicked);
+            setWasclicked(!wasclicked);
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            style={{width: "24px", height: "24px"}}
+            style={{ width: "24px", height: "24px" }}
           >
             <path
               strokeLinecap="round"

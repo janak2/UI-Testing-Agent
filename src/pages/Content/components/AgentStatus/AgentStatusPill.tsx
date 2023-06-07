@@ -7,7 +7,7 @@ interface IAgentStatusPillProps {
   onClick?: () => void;
   agent: IAgentInfo;
   agentState: AgentState;
-  quip:string;
+  quip: string;
 }
 
 const PillContainer = styled.div`
@@ -39,8 +39,8 @@ export default function AgentStatusPill({
         src={agent.profileImgUrl}
         alt="agent profile"
         style={{
-          width: "2rem",
-          height: "2rem",
+          width: "32px",
+          height: "32px",
           borderRadius: "50%",
           objectFit: "cover",
         }}
@@ -56,7 +56,7 @@ export default function AgentStatusPill({
           marginBottom: "0px",
         }}
       >
-        {agent.name} {quip ? 'thinks that...' : 'is browsing...'}
+        {agent.name} {quip ? "thinks that..." : "is browsing..."}
       </h3>
     </PillContainer>
   );

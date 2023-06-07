@@ -29,7 +29,7 @@ function requestFeedback(persona, domSummary, setQuip) {
 
 $(document).ready(() => {
   console.log("starting scrape");
-  requestFeedback("angry steve jobs", scrapeDOM());
+  requestFeedback("angry Steve Jobs", scrapeDOM());
 });
 
 printLine("Using the 'printLine' function from the Print Module");
@@ -73,10 +73,9 @@ const getRandomClickableElement = () => {
       element.getBoundingClientRect().x !== 0 &&
       element.getBoundingClientRect().y !== 0;
 
-    const hasDomain = !element.href || element.href.includes(window.location.hostname); 
-    return (
-      (hasClickableRole || isClickableTag) && isNotAtOrigin && hasDomain
-    );
+    const hasDomain =
+      !element.href || element.href.includes(window.location.hostname);
+    return (hasClickableRole || isClickableTag) && isNotAtOrigin && hasDomain;
   });
 
   // Select a random element from the clickable elements
@@ -121,7 +120,7 @@ const App = () => {
 
   React.useEffect(() => {
     console.log("starting scrape");
-    requestFeedback("angry steve jobs", scrapeDOM(), setQuip);
+    requestFeedback("angry Steve Jobs", scrapeDOM(), setQuip);
   }, []);
 
   React.useEffect(() => {
@@ -154,12 +153,12 @@ const App = () => {
       }
       setTimeout(() => {
         setCursorClicked(true);
-      }, 1000)
+      }, 1000);
       setTimeout(() => {
         nextElement.click();
         setWasclicked(false);
         setCursorClicked(false);
-      },1500);
+      }, 1500);
     };
     if (wasclicked) {
       simulateClick();
@@ -172,11 +171,7 @@ const App = () => {
         setWasclicked={setWasclicked}
         quip={quip}
       />
-      <Cursor
-        name="John"
-        position={position}
-        clicked={cursorClicked}
-      />
+      <Cursor name="Steve" position={position} clicked={cursorClicked} />
     </>
   );
 };

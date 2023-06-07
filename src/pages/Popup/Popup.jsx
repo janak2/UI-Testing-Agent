@@ -74,7 +74,7 @@ const onClick = async () => {
 
   const response = await chrome.runtime.sendMessage({
     type: "getFeedback",
-    persona: "angry steve jobs",
+    persona: "angry Steve Jobs",
     domSummary: await requestDom(),
     requestId: requestId,
   });
@@ -171,7 +171,7 @@ const Popup = () => {
                     marginBottom: "0px",
                   }}
                 >
-                  John Peterson
+                  Steve
                 </h3>
                 <p
                   style={{
@@ -293,7 +293,7 @@ const Popup = () => {
                 color: "#FFFFFF",
               }}
             >
-              See John In Action
+              See Steve In Action
             </p>
           </Button>
         </div>
